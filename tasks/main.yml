@@ -6,7 +6,7 @@
     patterns: '^nameserver ([0-9]{1,3}\.){1,3}[0-9]{1,3}$'
   register: found_previous
 
-- name: Set up resolv.conf (non-verride).
+- name: Set up resolv.conf (override).
   template:
     src: "{{ item }}"
     dest: /etc/resolv.conf
@@ -17,21 +17,12 @@
     - files:
         - "{{ 'hostname_' + inventory_hostname + '.j2' }}"
         - resolv.j2
-  paths:
-    - ../templates
-  when: (found_previous is not defined and replace_previous == 1) or replace_previous == 0
+  when: found_previous.matched == 0
 
 - name: Set up resolv.conf (override or non-existent).
-  template:
-    src: "{{ item }}"
-    dest: /etc/resolv.conf
-    owner: root
-    group: root
-    mode: 0644
-  with_first_found:
-    - files:
-        - "{{ 'hostname_' + inventory_hostname + '.j2' }}"
-        - resolv.j2
-  paths:
-    - ../templates
-  when: (found_previous is defined) and (replace_previous == 1)
+  lineinfile:
+    path: /etc/resolv.conf
+    insertafter: EOF
+    line: "{{ item }}"
+  with_items: resolvers
+  when: found_previous.matched == 1 and replace_previous
