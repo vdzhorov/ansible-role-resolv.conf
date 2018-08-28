@@ -19,7 +19,7 @@
         - resolv.j2
   paths:
     - ../templates
-  when: found_previous is not defined
+  when: (found_previous is not defined and replace_previous == 1) or replace_previous == 0
 
 - name: Set up resolv.conf (override or non-existent).
   template:
@@ -35,4 +35,3 @@
   paths:
     - ../templates
   when: (found_previous is defined) and (replace_previous == 1)
-
