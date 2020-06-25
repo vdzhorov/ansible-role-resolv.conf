@@ -2,7 +2,7 @@
 dependencies: []
 
 galaxy_info:
-  role_name: resolv.conf
+  role_name: resolvers
   author: vdzhorov
   description: Set up resolv.conf.
   company: "Delta.BG"
@@ -19,7 +19,8 @@ galaxy_info:
       versions:
         - all
   galaxy_tags:
-    - resolv.conf
-    - linux
+    - resolv
+    - resolvers
     - resolver
+    - linux
 ...
