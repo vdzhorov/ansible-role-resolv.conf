@@ -3,6 +3,7 @@
   command: "egrep ^nameserver /etc/resolv.conf"
   register: resolv_conf_records
   failed_when: False
+  changed_when: False
 
 - name: Set up resolv.conf (non-existent records).
   template:
