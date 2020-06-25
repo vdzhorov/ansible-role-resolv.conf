@@ -1,0 +1,5 @@
+{% if ansible_managed is defined %}{{ ansible_managed }}
+{% endif %}
+{% for nameserver in resolv_conf_nameservers %}
+nameserver {{nameserver}}
+{% endfor %}

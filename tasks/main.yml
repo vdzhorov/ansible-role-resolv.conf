@@ -1,28 +1,24 @@
 ---
+- name: Check if there are any previous entries in resolv.conf.
+  command: "egrep ^nameserver /etc/resolv.conf"
+  register: resolv_conf_records
+  failed_when: False
 
-- name: Check if there are any previous entries in resolv.conf
-  find:
-    paths: /etc/resolv.conf
-    patterns: '^nameserver ([0-9]{1,3}\.){1,3}[0-9]{1,3}$'
-  register: found_previous
-
-- name: Set up resolv.conf (override).
+- name: Set up resolv.conf (non-existent records).
   template:
-    src: "{{ item }}"
+    src: "resolv.conf.j2"
     dest: /etc/resolv.conf
     owner: root
     group: root
     mode: 0644
-  with_first_found:
-    - files:
-        - "{{ 'hostname_' + inventory_hostname + '.j2' }}"
-        - resolv.j2
-  when: found_previous.matched == 0
+  when: >
+    __resolv_conf_records | length == 0
 
-- name: Set up resolv.conf (override or non-existent).
+- name: Set up resolv.conf (append to current records).
   lineinfile:
     path: /etc/resolv.conf
-    insertafter: EOF
-    line: "{{ item }}"
-  with_items: resolvers
-  when: found_previous.matched == 1 and replace_previous
+    line: "nameserver {{ item }}"
+  loop: "{{ resolv_conf_nameservers }}"
+  when: >
+    __resolv_conf_records | length > 0
+...
