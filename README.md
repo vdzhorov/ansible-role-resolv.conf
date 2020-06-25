@@ -1,7 +1,33 @@
-This simple role is used to manage resolv.conf on a group of hosts and keep it consistent. You will need to edit only defaults/main.yml and place your nameservers there. Edit vars/main.yml and set replace_previous in order to disable replacing old nameservers behaviour. Example playbook:
+# Ansible Role: resolvers
 
----
+Simple role that manages resolv.conf automatically on RedHat/CentOS, Debian and Ubuntu-based systems.
 
-- hosts: test-inventory
-  roles:
-    - resolv-conf
+## Requirements
+
+None
+
+## Installation
+
+`ansible-galaxy install vdzhorov.resolvers`
+
+## Role Variables
+
+Available variables are listed below, along with default values (see `defaults/main.yml`):
+
+    resolv_conf_nameservers: []
+
+The `resolv_conf_nameservers` list is not mandatory, it will be set up from role defaults. You can however set it to whatever you'd like in your group_vars/host_vars in order to override it.
+
+## Dependencies
+
+None
+
+## Example Playbook
+
+    - hosts: all
+      roles:
+        - vdzhorov.resolvers
+
+## License
+
+MIT
